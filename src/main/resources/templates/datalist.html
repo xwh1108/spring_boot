@@ -8,7 +8,7 @@
 
 
 
-    <title>数据 - AdminLTE2定制版</title>
+    <title>产品管理</title>
     <meta name="description" content="AdminLTE2定制版">
     <meta name="keywords" content="AdminLTE2定制版">
 
@@ -225,13 +225,13 @@
             <!-- 内容头部 -->
             <section class="content-header">
                 <h1>
-                    用户管理
-                    <small>全部用户</small>
+                    产品管理
+                    <small>全部产品</small>
                 </h1>
                 <ol class="breadcrumb">
                     <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
-                    <li><a href="#">用户管理</a></li>
-                    <li class="active">全部用户</li>
+                    <li><a href="#">产品管理</a></li>
+                    <li class="active">全部产品</li>
                 </ol>
             </section>
             <!-- 内容头部 /-->
@@ -288,7 +288,22 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-
+                                <tr th:each="product:${products}">
+                                    <td><input name="ids" type="checkbox"></td>
+                                    <td th:text="${product.id}"></td>
+                                    <td th:text="${product.productNum}"></td>
+                                    <td th:text="${product.productName}"></td>
+                                    <td th:text="${product.cityName}"></td>
+                                    <td th:text="${product.departureTimeStr}"></td>
+                                    <td class="text-center" th:text="${product.productPrice}"></td>
+                                    <td th:text="${product.productDesc}"></td>
+                                    <td class="text-center" th:text="${product.productStatusStr}"></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn bg-olive btn-xs">订单</button>
+                                        <button type="button" class="btn bg-olive btn-xs">详情</button>
+                                        <button type="button" class="btn bg-olive btn-xs">编辑</button>
+                                    </td>
+                                </tr>
 
                                 <!--<c:forEach items="${productList}" var="product">-->
 
@@ -325,8 +340,8 @@
                     <div class="box-footer">
                         <div class="pull-left">
                             <div class="form-group form-inline">
-                                总共2 页，共14 条数据。 每页
-                                <select class="form-control">
+                                总共<span th:text="${pageInfo.pages}"></span> 页，共<span th:text="${pageInfo.total}"></span> 条数据。 每页
+                                <select class="form-control" id="changePageSize" onchange="changePageSize()">
                             <option>1</option>
                             <option>2</option>
                             <option>3</option>
@@ -339,18 +354,15 @@
                         <div class="box-tools pull-right">
                             <ul class="pagination">
                                 <li>
-                                    <a href="#" aria-label="Previous">首页</a>
+                                    <a th:href="@{'/product/findAll?page=1&pageSize='+${pageInfo.pageSize}}" aria-label="Previous">首页</a>
                                 </li>
-                                <li><a href="#">上一页</a></li>
-                                <li><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li><a href="#">4</a></li>
-                                <li><a href="#">5</a></li>
-                                <li><a href="#">下一页</a></li>
-                                <li>
-                                    <a href="#" aria-label="Next">尾页</a>
-                                </li>
+                                <li><a th:href="@{'/product/findAll?page='+${pageInfo.pageNum - 1}+'&pageSize='+${pageInfo.pageSize}}">上一页</a></li>
+                                    <li th:if="${pageInfo.pages <= 10}" th:each="i:${#numbers.sequence(1,pageInfo.pages)}"><a th:href="@{'/product/findAll?page='+${i}+'&pageSize='+${pageInfo.pageSize}}" th:text="${i}"></a></li>
+                                    <li th:if="${pageInfo.pages > 10}" th:each="i:${#numbers.sequence(pageInfo.pageNum,(pageInfo.pageNum + 4) > pageInfo.pages ? pageInfo.pages : (pageInfo.pageNum + 4))}"><a th:href="@{'/product/findAll?page='+${i}+'&pageSize='+${pageInfo.pageSize}}" th:text="${i}"></a></li>
+                                    <li th:if="${pageInfo.pages > 10 && pageInfo.pageNum < pageInfo.pages - 8}" ><a href="#" >...</a></li>
+                                    <li th:if="${pageInfo.pages > 10 && pageInfo.pageNum < pageInfo.pages - 8 }" th:each="i:${#numbers.sequence(pageInfo.pages - 2,pageInfo.pages)}"><a th:href="@{'/product/findAll?page='+${i}+'&pageSize='+${pageInfo.pageSize}}" th:text="${i}"></a></li>
+                                <li><a th:href="@{'/product/findAll?page='+${pageInfo.pageNum + 1}+'&pageSize='+${pageInfo.pageSize}}">下一页</a></li>
+                                <li><a th:href="@{'/product/findAll?page='+${pageInfo.pages}+'&pageSize='+${pageInfo.pageSize}}" aria-label="Next">尾页</a></li>
                             </ul>
                         </div>
 
@@ -371,7 +383,7 @@
             <div class="pull-right hidden-xs">
                 <b>Version</b> 1.0.8
             </div>
-            <strong>Copyright &copy; 2014-2017 <a href="http://www.itcast.cn">研究院研发部</a>.</strong> All rights reserved.
+            <strong>Copyright &copy; 2014-2017 <a href="http://www.baidu.cn">研究院研发部</a>.</strong> All rights reserved.
         </footer>
         <!-- 底部导航 /-->
 
@@ -424,6 +436,19 @@
     <script src="../plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
     <script src="../plugins/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
     <script>
+        $(function () {
+            $("#changePageSize").find("option:contains('[[${pageInfo.pageSize}]]')").attr("selected",true);
+        });
+
+        function changePageSize() {
+            //获取下拉框的值
+            var pageSize = $("#changePageSize").val();
+
+
+            //向服务器发送请求，改变没页显示条数
+            location.href = "/product/findAll?page=[[${pageInfo.pageNum}]]&pageSize="
+                + pageSize;
+        }
         $(document).ready(function() {
             // 选择框
             $(".select2").select2();

@@ -8,3 +8,8 @@ spring:
 logging:
   level:
     com.xie.mapper: debug
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
