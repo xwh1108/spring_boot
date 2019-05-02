@@ -6,6 +6,7 @@ import com.xie.mapper.ProductMapper;
 import com.xie.pojo.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,5 +21,10 @@ public class ProductService {
         List<Product> products = productMapper.selectAll();
         PageInfo<Product> pageInfo=new PageInfo<>(products);
         return pageInfo;
+    }
+
+    @Transactional
+    public void delById(Integer id) {
+        productMapper.deleteByPrimaryKey(id);
     }
 }

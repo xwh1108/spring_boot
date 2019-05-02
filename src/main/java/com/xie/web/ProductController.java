@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -28,5 +29,13 @@ public class ProductController {
         model.addAttribute("pageInfo",pageInfo);
         model.addAttribute("products",pageInfo.getList());
         return "datalist";
+    }
+
+    @RequestMapping("del")
+    public String del(@RequestParam(name = "ids") List<Integer> ids){
+        for (Integer id : ids) {
+            productService.delById(id);
+        }
+        return "redirect:/product/findAll";
     }
 }
