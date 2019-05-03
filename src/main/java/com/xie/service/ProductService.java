@@ -27,4 +27,16 @@ public class ProductService {
     public void delById(Integer id) {
         productMapper.deleteByPrimaryKey(id);
     }
+    @Transactional
+    public void add(Product product) {
+        productMapper.insert(product);
+    }
+
+    public Product findById(Integer id) {
+        return productMapper.selectByPrimaryKey(id);
+    }
+
+    public void update(Product product) {
+        productMapper.updateByPrimaryKey(product);
+    }
 }

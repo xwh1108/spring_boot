@@ -24,6 +24,7 @@ public class Product {
     private String productNum; // 编号 唯一
     private String productName; // 名称
     private String cityName; // 出发城市
+    @DateTimeFormat(pattern = "yyyy-mm-dd HH:ss")
     private Date departureTime; // 出发时间
     @Transient
     private String departureTimeStr;
