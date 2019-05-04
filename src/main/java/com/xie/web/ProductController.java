@@ -3,6 +3,7 @@ package com.xie.web;
 import com.github.pagehelper.PageInfo;
 import com.xie.pojo.Product;
 import com.xie.service.ProductService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,11 +22,24 @@ public class ProductController {
     @GetMapping("findAll")
     public String findAll(Model model,
                           @RequestParam(name = "page",defaultValue = "1") Integer page,
-                          @RequestParam(name = "pageSize",defaultValue = "5") Integer pageSize){
-        PageInfo<Product> pageInfo = productService.findAll(page, pageSize);
+                          @RequestParam(name = "pageSize",defaultValue = "5") Integer pageSize,
+                          @RequestParam(name = "key",defaultValue = "") String key){
+        PageInfo<Product> pageInfo = productService.findAll(page, pageSize,key);
         model.addAttribute("pageInfo",pageInfo);
         model.addAttribute("products",pageInfo.getList());
         return "datalist";
+
+    }
+    @PostMapping("findAll")
+    public String selectAll(Model model,
+                          @RequestParam(name = "page",defaultValue = "1") Integer page,
+                          @RequestParam(name = "pageSize",defaultValue = "5") Integer pageSize,
+                          @RequestParam(name = "key",defaultValue = "") String key){
+        PageInfo<Product> pageInfo = productService.findAll(page, pageSize,key);
+        model.addAttribute("pageInfo",pageInfo);
+        model.addAttribute("products",pageInfo.getList());
+        return "datalist::table_refresh";
+
     }
 
     @RequestMapping("del")

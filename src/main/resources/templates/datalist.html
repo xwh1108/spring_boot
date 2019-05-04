@@ -17,7 +17,6 @@
 
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
-
     <link rel="stylesheet" href="../plugins/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="../plugins/ionicons/css/ionicons.min.css">
@@ -263,12 +262,9 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">列表</h3>
                     </div>
-
                     <div class="box-body">
-
                         <!-- 数据表格 -->
                         <div class="table-box">
-
                             <!--工具栏-->
                             <div class="pull-left">
                                 <div class="form-group form-inline">
@@ -280,7 +276,7 @@
                             </div>
                             <div class="box-tools pull-right">
                                 <div class="has-feedback">
-                                    <input type="text" class="form-control input-sm" placeholder="搜索">
+                                    <input type="text" class="form-control input-sm" placeholder="搜索" id="key" onkeyup="selectProduct()">
                                     <span class="glyphicon glyphicon-search form-control-feedback"></span>
                                 </div>
                             </div>
@@ -288,7 +284,7 @@
 
                             <!--数据列表-->
                             <table id="dataList"
-                                   class="table table-bordered table-striped table-hover dataTable">
+                                   class="table table-bordered table-striped table-hover dataTable" th:fragment="table_refresh">
                                 <thead>
                                 <tr>
                                     <th class="" style="padding-right: 0px;"><input
@@ -452,6 +448,17 @@
     <script src="../plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
     <script src="../plugins/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
     <script>
+        function selectProduct(){
+            var key=$("#key").val();
+            var url="/product/findAll?page=1&pageSize=5&key="+key;
+            $.ajax({
+                url: url,
+                type: 'post',
+                success: function (data) {
+                    $('#dataList').html(data);
+                }
+            })
+        }
         $(function () {
             $("#changePageSize").find("option:contains('[[${pageInfo.pageSize}]]')").attr("selected",true);
         });
